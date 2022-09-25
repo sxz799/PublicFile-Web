@@ -12,8 +12,8 @@
       </div>
       <a-divider />
       <div>
-        <a-upload-dragger name="file" :before-upload="beforeUpload" :showUploadList="false" :multiple="false"
-          action="/file/upload" @change="handleChange">
+        <a-upload-dragger :progress="progress" name="file" :before-upload="beforeUpload" :showUploadList="true"
+          :multiple="false" action="/file/upload" @change="handleChange">
           <p class="ant-upload-drag-icon">
             <inbox-outlined></inbox-outlined>
           </p>
@@ -47,14 +47,21 @@ export default defineComponent({
       }
       return sizeLimit;
     };
-
+    const progress = {
+      strokeColor: {
+        '0%': '#108ee9',
+        '100%': '#87d068',
+      },
+      strokeWidth: 3,
+      format: percent => `${parseFloat(percent.toFixed(2))}%`,
+      class: 'test',
+    };
     return {
       fileCode: '',
       showResult: false,
       uploadResult: '',
       uploadStatus: 'success',
       handleChange: e => {
-        console.log(e.file);
         if (e.file.status == 'done') {
           this.showResult = true
           if (e.file.response.success) {
@@ -66,6 +73,7 @@ export default defineComponent({
         }
       },
       beforeUpload,
+      progress,
     };
   },
   methods: {
@@ -74,6 +82,7 @@ export default defineComponent({
         params: { code: this.fileCode },
       }).then((res) => {
         if (res.data.success) {
+          message.info("当前文件大小为：" + parseFloat(res.data.fileObj.fileSize / 1024 / 1024).toFixed(2) + "MB，请耐心等待！", 10)
           axios.get("/file/download", {
             params: { code: this.fileCode },
             responseType: 'blob', // 切记类型 blob
