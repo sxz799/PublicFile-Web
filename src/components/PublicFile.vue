@@ -20,7 +20,7 @@
           <p class="ant-upload-text">点击或拖拽文件到这里进行上传</p>
         </a-upload-dragger>
 
-        <a-result v-show="showResult" status="success" :title="uploadResult" sub-title="请牢记此提取码！文件有效期为24小时！">
+        <a-result v-show="showResult" status="success" :title="uploadResult" :sub-title="subTitle">
         </a-result>
       </div>
     </a-col>
@@ -39,11 +39,19 @@ export default defineComponent({
   components: {
     InboxOutlined,
   },
+  mounted() {
+    message.info("23232")
+    axios.get("/file/config").then((res) => {
+      this.fileSize = res.data.fileSize
+      this.subTitle = "请牢记此提取码！文件有效期为" + res.data.fileLife + "小时！"
+    });
+  },
   data() {
     const beforeUpload = file => {
-      const sizeLimit = file.size / 1024 / 1024 < 30;
+      console.log(this.fileSize);
+      const sizeLimit = file.size / 1024 / 1024 < this.fileSize;
       if (!sizeLimit) {
-        message.error('文件大小不可超过 30 MB !');
+        message.error('文件大小不可超过 ' + this.fileSize + ' MB !');
       }
       return sizeLimit;
     };
@@ -57,6 +65,8 @@ export default defineComponent({
       class: 'test',
     };
     return {
+      fileSize: 10,
+      subTitle: '',
       fileCode: '',
       showResult: false,
       uploadResult: '',

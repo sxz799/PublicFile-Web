@@ -6,7 +6,7 @@ module.exports = defineConfig({
     proxy: {
       '/file': {
         ws: false,
-        target: "http://124.223.7.129:9091",
+        target: "http://127.0.0.1:9091",
         changeOrigin: true
       }
     }
