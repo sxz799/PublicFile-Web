@@ -3,8 +3,8 @@
   <a-divider />
 
   <a-row type="flex">
-    <a-col :flex="2"></a-col>
-    <a-col :flex="6">
+    <a-col :flex="1"></a-col>
+    <a-col :flex="2">
       <div>
         <a-input v-model:value="fileCode" placeholder="请输入文件提取码" style="width: calc(100% - 150px)" />
         <a-divider type="vertical" />
@@ -24,7 +24,7 @@
         </a-result>
       </div>
     </a-col>
-    <a-col :flex="2"></a-col>
+    <a-col :flex="1"></a-col>
   </a-row>
 
 
@@ -40,7 +40,9 @@ export default defineComponent({
     InboxOutlined,
   },
   mounted() {
-    message.info("23232")
+    message.info("欢迎使用临时网盘系统,请勿上传隐私文件！")
+    message.info("欢迎使用临时网盘系统,请勿上传隐私文件！")
+    message.info("欢迎使用临时网盘系统,请勿上传隐私文件！")
     axios.get("/file/config").then((res) => {
       this.fileSize = res.data.fileSize
       this.subTitle = "请牢记此提取码！文件有效期为" + res.data.fileLife + "小时！"
