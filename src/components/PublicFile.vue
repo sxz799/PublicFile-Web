@@ -5,9 +5,10 @@
   <a-row type="flex">
     <a-col :flex="2"></a-col>
     <a-col :flex="6">
-      <div :disabled="isAble">
+      <div>
         <a-input v-model:value="fileCode" placeholder="请输入文件提取码" style="width: calc(100% - 150px)" />
-        <a-button @click="download" type="primary">下载文件</a-button>
+        <a-divider type="vertical" />
+        <a-button @click="download" type="primary">提取文件</a-button>
       </div>
       <a-divider />
       <div>
@@ -19,7 +20,7 @@
           <p class="ant-upload-text">点击或拖拽文件到这里进行上传</p>
         </a-upload-dragger>
 
-        <a-result v-show="showResult" status="success" :title="uploadResult" sub-title="所有上传的文件都将于凌晨4点删除！">
+        <a-result v-show="showResult" status="success" :title="uploadResult" sub-title="请牢记此提取码！文件有效期为24小时！">
         </a-result>
       </div>
     </a-col>
@@ -40,15 +41,14 @@ export default defineComponent({
   },
   data() {
     const beforeUpload = file => {
-      const isLt10M = file.size / 1024 / 1024 < 10;
-      if (!isLt10M) {
-        message.error('文件大小不可超过 10 MB !');
+      const sizeLimit = file.size / 1024 / 1024 < 30;
+      if (!sizeLimit) {
+        message.error('文件大小不可超过 30 MB !');
       }
-      return isLt10M;
+      return sizeLimit;
     };
 
     return {
-      isAble: false,
       fileCode: '',
       showResult: false,
       uploadResult: '',
@@ -92,13 +92,8 @@ export default defineComponent({
         } else {
           message.warning("此提取码不存在！")
         }
-
       });
-
-
     },
-
-
   }
 });
 </script>
