@@ -1,0 +1,104 @@
+<template>
+  <img alt="Vue logo" src="../assets/logo.png">
+  <a-divider />
+
+  <a-row type="flex">
+    <a-col :flex="2"></a-col>
+    <a-col :flex="6">
+      <div :disabled="isAble">
+        <a-input v-model:value="fileCode" placeholder="请输入文件提取码" style="width: calc(100% - 150px)" />
+        <a-button @click="download" type="primary">下载文件</a-button>
+      </div>
+      <a-divider />
+      <div>
+        <a-upload-dragger name="file" :before-upload="beforeUpload" :showUploadList="false" :multiple="false"
+          action="/file/upload" @change="handleChange">
+          <p class="ant-upload-drag-icon">
+            <inbox-outlined></inbox-outlined>
+          </p>
+          <p class="ant-upload-text">点击或拖拽文件到这里进行上传</p>
+        </a-upload-dragger>
+
+        <a-result v-show="showResult" status="success" :title="uploadResult" sub-title="所有上传的文件都将于凌晨4点删除！">
+        </a-result>
+      </div>
+    </a-col>
+    <a-col :flex="2"></a-col>
+  </a-row>
+
+
+</template>
+
+<script>
+import { InboxOutlined } from '@ant-design/icons-vue';
+import { message } from 'ant-design-vue';
+import { defineComponent, ref } from 'vue';
+import axios from 'axios';
+export default defineComponent({
+  components: {
+    InboxOutlined,
+  },
+  data() {
+    const beforeUpload = file => {
+      const isLt10M = file.size / 1024 / 1024 < 10;
+      if (!isLt10M) {
+        message.error('文件大小不可超过 10 MB !');
+      }
+      return isLt10M;
+    };
+
+    return {
+      isAble: false,
+      fileCode: '',
+      showResult: false,
+      uploadResult: '',
+      uploadStatus: 'success',
+      handleChange: e => {
+        console.log(e.file);
+        if (e.file.status == 'done') {
+          this.showResult = true
+          if (e.file.response.success) {
+            this.uploadResult = e.file.response.message
+          } else {
+            this.uploadStatus = 'warning'
+            this.uploadResult = e.file.response.message
+          }
+        }
+      },
+      beforeUpload,
+    };
+  },
+  methods: {
+    download() {
+      axios.get("/file/exist", {
+        params: { code: this.fileCode },
+      }).then((res) => {
+        if (res.data.success) {
+          axios.get("/file/download", {
+            params: { code: this.fileCode },
+            responseType: 'blob', // 切记类型 blob
+          }).then((res) => {
+            console.log(res);
+            let blob = new Blob([res.data]);
+            let url = window.URL.createObjectURL(blob); // 创建 url 并指向 blob
+            let a = document.createElement('a');
+            a.href = url;
+            a.download = decodeURIComponent(res.headers.filename);
+            a.click();
+            window.URL.revokeObjectURL(url); // 释放该 url
+          }).catch((err) => {
+            console.log(err);
+          });
+        } else {
+          message.warning("此提取码不存在！")
+        }
+
+      });
+
+
+    },
+
+
+  }
+});
+</script>
