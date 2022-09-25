@@ -1,6 +1,6 @@
 <template>
 
-  <PublicFile msg="Welcome to PublicFile" />
+  <PublicFile></PublicFile>
 </template>
 
 <script>

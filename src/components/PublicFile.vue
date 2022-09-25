@@ -82,22 +82,8 @@ export default defineComponent({
         params: { code: this.fileCode },
       }).then((res) => {
         if (res.data.success) {
-          message.info("当前文件大小为：" + parseFloat(res.data.fileObj.fileSize / 1024 / 1024).toFixed(2) + "MB，请耐心等待！", 10)
-          axios.get("/file/download", {
-            params: { code: this.fileCode },
-            responseType: 'blob', // 切记类型 blob
-          }).then((res) => {
-            console.log(res);
-            let blob = new Blob([res.data]);
-            let url = window.URL.createObjectURL(blob); // 创建 url 并指向 blob
-            let a = document.createElement('a');
-            a.href = url;
-            a.download = decodeURIComponent(res.headers.filename);
-            a.click();
-            window.URL.revokeObjectURL(url); // 释放该 url
-          }).catch((err) => {
-            console.log(err);
-          });
+          message.info("即将开始下载！文件大小为：" + parseFloat(res.data.fileObj.fileSize / 1024 / 1024).toFixed(2) + " MB！", 10)
+          window.location.href = "/file/download?code=" + this.fileCode
         } else {
           message.warning("此提取码不存在！")
         }
