@@ -29,7 +29,10 @@
         <a-result :status="uploadStatus" :title="uploadResult" :sub-title="subTitle">
         </a-result>
       </a-modal>
-      
+      <a-divider />
+      <a-card  title="温馨提示">
+      <h4>欢迎使用临时网盘系统,请勿上传隐私文件！</h4>
+      </a-card>
     </a-col>
     <a-col :flex="1"></a-col>
   </a-row>
@@ -48,7 +51,6 @@ export default defineComponent({
     InboxOutlined,DownloadOutlined
   },
   mounted() {
-    message.info("欢迎使用临时网盘系统,请勿上传隐私文件！")
     axios.get("/file/config").then((res) => {
       this.fileSize = res.data.fileSize
       this.subTitle = "请牢记此提取码！文件有效期为" + res.data.fileLife + "小时！"

@@ -1,20 +1,23 @@
 # publicfile-web
 
-## Project setup
+使用 vue + ant design vue 搭建的临时网盘系统前端页面
+
+## 后端仓库
+
+[PublicFile-Web](https://github.com/sxz799/PublicFile-Web)
+
+## 编译命令
 ```
 npm install
 ```
-
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
 ```
 npm run build
 ```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
-# PublicFile-Web
+
+## 配置nginx配置文件解决跨域问题
+```
+location /file {
+                proxy_pass http://124.223.7.129:9091;
+        }
+```
