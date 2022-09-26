@@ -41,8 +41,6 @@ export default defineComponent({
   },
   mounted() {
     message.info("欢迎使用临时网盘系统,请勿上传隐私文件！")
-    message.info("欢迎使用临时网盘系统,请勿上传隐私文件！")
-    message.info("欢迎使用临时网盘系统,请勿上传隐私文件！")
     axios.get("/file/config").then((res) => {
       this.fileSize = res.data.fileSize
       this.subTitle = "请牢记此提取码！文件有效期为" + res.data.fileLife + "小时！"
@@ -90,12 +88,10 @@ export default defineComponent({
   },
   methods: {
     download() {
-      axios.get("/file/exist", {
-        params: { code: this.fileCode },
-      }).then((res) => {
+      axios.get("/file/exist/"+this.fileCode).then((res) => {
         if (res.data.success) {
           message.info("即将开始下载！文件大小为：" + parseFloat(res.data.fileObj.fileSize / 1024 / 1024).toFixed(2) + " MB！", 10)
-          window.location.href = "/file/download?code=" + this.fileCode
+          window.location.href = "/file/download/" + this.fileCode
         } else {
           message.warning("此提取码不存在！")
         }
