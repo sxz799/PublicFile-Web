@@ -56,7 +56,6 @@ export default defineComponent({
   },
   data() {
     const beforeUpload = file => {
-      console.log(this.fileSize);
       const sizeLimit = file.size / 1024 / 1024 < this.fileSize;
       if (!sizeLimit) {
         message.error('文件大小不可超过 ' + this.fileSize + ' MB !');
@@ -80,7 +79,6 @@ export default defineComponent({
       uploadResult: '',
       uploadStatus: 'info',
       handleChange: e => {
-        console.log(e);
         if (e.file.status == 'done') {
           this.showResult = true
           this.uploadStatus = e.file.response.status
