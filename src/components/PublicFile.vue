@@ -19,10 +19,12 @@
           </p>
           <p class="ant-upload-text">点击或拖拽文件到这里进行上传</p>
         </a-upload-dragger>
-
-        <a-result v-show="showResult" status="success" :title="uploadResult" :sub-title="subTitle">
-        </a-result>
       </div>
+      <a-modal v-model:visible="showResult" title="上传结果" okText="确定" cancelText="取消" @ok="handleOk">
+        <a-result status="success" :title="uploadResult" :sub-title="subTitle">
+        </a-result>
+      </a-modal>
+      
     </a-col>
     <a-col :flex="1"></a-col>
   </a-row>
@@ -87,6 +89,9 @@ export default defineComponent({
     };
   },
   methods: {
+    handleOk(){
+      this.showResult = false
+    },
     download() {
       axios.get("/file/exist/"+this.fileCode).then((res) => {
         if (res.data.success) {
