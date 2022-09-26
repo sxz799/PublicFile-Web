@@ -1,14 +1,19 @@
 <template>
-  <img alt="Vue logo" src="../assets/logo.png">
-  <a-divider />
-
   <a-row type="flex">
     <a-col :flex="1"></a-col>
     <a-col :flex="2">
+      <img alt="Vue logo" src="../assets/logo.png">
+      <a-divider />
       <div>
-        <a-input v-model:value="fileCode" placeholder="请输入文件提取码" style="width: calc(100% - 150px)" />
+        <a-input v-model:value="fileCode" allowClear="true" placeholder="请输入文件提取码" show-count :maxlength="6" style="vertical-align:middle;width: calc(95% - 150px);height: 40px;" />
         <a-divider type="vertical" />
-        <a-button @click="download" type="primary">提取文件</a-button>
+        <a-button @click="download" type="primary" shape="round" style="vertical-align:middle;height: 40px;">
+          <template #icon>
+             <DownloadOutlined />
+          </template>
+          提取文件
+        </a-button>
+        
       </div>
       <a-divider />
       <div>
@@ -21,7 +26,7 @@
         </a-upload-dragger>
       </div>
       <a-modal v-model:visible="showResult" title="上传结果" okText="确定" cancelText="取消" @ok="handleOk">
-        <a-result status="success" :title="uploadResult" :sub-title="subTitle">
+        <a-result :status="uploadStatus" :title="uploadResult" :sub-title="subTitle">
         </a-result>
       </a-modal>
       
@@ -34,12 +39,13 @@
 
 <script>
 import { InboxOutlined } from '@ant-design/icons-vue';
+import { DownloadOutlined } from '@ant-design/icons-vue';
 import { message } from 'ant-design-vue';
 import { defineComponent, ref } from 'vue';
 import axios from 'axios';
 export default defineComponent({
   components: {
-    InboxOutlined,
+    InboxOutlined,DownloadOutlined
   },
   mounted() {
     message.info("欢迎使用临时网盘系统,请勿上传隐私文件！")
@@ -72,14 +78,16 @@ export default defineComponent({
       fileCode: '',
       showResult: false,
       uploadResult: '',
-      uploadStatus: 'success',
+      uploadStatus: 'info',
       handleChange: e => {
+        console.log(e);
         if (e.file.status == 'done') {
           this.showResult = true
+          this.uploadStatus = e.file.response.status
           if (e.file.response.success) {
             this.uploadResult = e.file.response.message
           } else {
-            this.uploadStatus = 'warning'
+
             this.uploadResult = e.file.response.message
           }
         }
@@ -93,6 +101,10 @@ export default defineComponent({
       this.showResult = false
     },
     download() {
+      if(this.fileCode.length!=6){
+        message.warning("提取码长度为 6 !")
+        return
+      }
       axios.get("/file/exist/"+this.fileCode).then((res) => {
         if (res.data.success) {
           message.info("即将开始下载！文件大小为：" + parseFloat(res.data.fileObj.fileSize / 1024 / 1024).toFixed(2) + " MB！", 10)
@@ -105,3 +117,4 @@ export default defineComponent({
   }
 });
 </script>
+
