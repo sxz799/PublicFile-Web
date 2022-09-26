@@ -4,7 +4,7 @@
 
 ## 后端仓库
 
-[PublicFile-Web](https://github.com/sxz799/PublicFile-Web)
+[PublicFile-Server](https://github.com/sxz799/PublicFile-Server)
 
 ## 编译命令
 ```
