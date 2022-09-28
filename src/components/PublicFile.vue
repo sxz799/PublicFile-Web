@@ -5,7 +5,7 @@
       <img alt="Vue logo" src="../assets/logo.png">
       <a-divider />
       <div>
-        <a-input v-model:value="fileCode" allowClear="true" placeholder="请输入文件提取码" show-count :maxlength="6" style="vertical-align:middle;width: calc(95% - 150px);height: 40px;" />
+        <a-input v-model:value="fileCode" allowClear placeholder="请输入文件提取码" show-count :maxlength="10" style="vertical-align:middle;width: calc(95% - 150px);height: 40px;" />
         <a-divider type="vertical" />
         <a-button @click="download" type="primary" shape="round" style="vertical-align:middle;height: 40px;">
           <template #icon>
@@ -53,7 +53,7 @@ export default defineComponent({
   mounted() {
     axios.get("/file/config").then((res) => {
       this.fileSize = res.data.fileSize
-      this.subTitle = "请牢记此提取码！文件有效期为" + res.data.fileLife + "小时！"
+      this.fileLife = res.data.fileLife
     });
   },
   data() {
@@ -75,6 +75,7 @@ export default defineComponent({
     };
     return {
       fileSize: 10,
+      fileLife: 10,
       subTitle: '',
       fileCode: '',
       showResult: false,
@@ -82,12 +83,13 @@ export default defineComponent({
       uploadStatus: 'info',
       handleChange: e => {
         if (e.file.status == 'done') {
+          console.log(e);
           this.showResult = true
           this.uploadStatus = e.file.response.status
+          this.subTitle="文件："+e.file.originFileObj.name+" 有效期: "+ this.fileLife+" 小时,请牢记提取码！"
           if (e.file.response.success) {
             this.uploadResult = e.file.response.message
           } else {
-
             this.uploadResult = e.file.response.message
           }
         }
@@ -101,10 +103,6 @@ export default defineComponent({
       this.showResult = false
     },
     download() {
-      if(this.fileCode.length!=6){
-        message.warning("提取码长度为 6 !")
-        return
-      }
       axios.get("/file/exist/"+this.fileCode).then((res) => {
         if (res.data.success) {
           message.info("即将开始下载！文件大小为：" + parseFloat(res.data.fileObj.fileSize / 1024 / 1024).toFixed(2) + " MB！", 10)
