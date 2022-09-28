@@ -1,20 +1,19 @@
 <template>
   <a-row type="flex">
     <a-col :flex="1"></a-col>
-    <a-col :flex="2">
-      <img alt="Vue logo" src="../assets/logo.png">
+    <a-col :flex="1">
       <a-divider />
-      <div>
-        <a-input v-model:value="fileCode" allowClear placeholder="请输入文件提取码" show-count :maxlength="10" style="vertical-align:middle;width: calc(95% - 150px);height: 40px;" />
-        <a-divider type="vertical" />
-        <a-button @click="download" type="primary" shape="round" style="vertical-align:middle;height: 40px;">
-          <template #icon>
-             <DownloadOutlined />
-          </template>
-          提取文件
-        </a-button>
-        
-      </div>
+      <a-row>
+        <a-col :span="12">
+          <img src="../assets/logo.png" />
+        </a-col>
+        <a-col :span="12">
+          <a-card title="温馨提示">
+            <h4>欢迎使用临时网盘系统,请勿上传隐私文件！</h4>
+            <h4>欢迎使用临时网盘系统,请勿上传隐私文件！</h4>
+          </a-card>
+        </a-col>
+      </a-row>
       <a-divider />
       <div>
         <a-upload-dragger :progress="progress" name="file" :before-upload="beforeUpload" :showUploadList="true"
@@ -30,9 +29,17 @@
         </a-result>
       </a-modal>
       <a-divider />
-      <a-card  title="温馨提示">
-      <h4>欢迎使用临时网盘系统,请勿上传隐私文件！</h4>
-      </a-card>
+      <div>
+        <a-input v-model:value="fileCode" allowClear placeholder="请输入文件提取码" show-count :maxlength="10"
+          style="vertical-align:middle;width: calc(95% - 150px);height: 40px;" />
+        <a-divider type="vertical" />
+        <a-button @click="download" type="primary" shape="round" style="vertical-align:middle;height: 40px;">
+          <template #icon>
+            <DownloadOutlined />
+          </template>
+          提取文件
+        </a-button>
+      </div>
     </a-col>
     <a-col :flex="1"></a-col>
   </a-row>
@@ -48,7 +55,7 @@ import { defineComponent, ref } from 'vue';
 import axios from 'axios';
 export default defineComponent({
   components: {
-    InboxOutlined,DownloadOutlined
+    InboxOutlined, DownloadOutlined
   },
   mounted() {
     axios.get("/file/config").then((res) => {
@@ -86,7 +93,7 @@ export default defineComponent({
           console.log(e);
           this.showResult = true
           this.uploadStatus = e.file.response.status
-          this.subTitle="文件："+e.file.originFileObj.name+" 有效期: "+ this.fileLife+" 小时,请牢记提取码！"
+          this.subTitle = "文件：" + e.file.originFileObj.name + " 有效期: " + this.fileLife + " 小时,请牢记提取码！"
           if (e.file.response.success) {
             this.uploadResult = e.file.response.message
           } else {
@@ -99,11 +106,11 @@ export default defineComponent({
     };
   },
   methods: {
-    handleOk(){
+    handleOk() {
       this.showResult = false
     },
     download() {
-      axios.get("/file/exist/"+this.fileCode).then((res) => {
+      axios.get("/file/exist/" + this.fileCode).then((res) => {
         if (res.data.success) {
           message.info("即将开始下载！文件大小为：" + parseFloat(res.data.fileObj.fileSize / 1024 / 1024).toFixed(2) + " MB！", 10)
           window.location.href = "/file/download/" + this.fileCode
