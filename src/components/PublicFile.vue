@@ -1,6 +1,6 @@
 <template>
   <a-row type="flex">
-    <a-col :flex="1"></a-col>
+    <a-col :flex="2"></a-col>
     <a-col :flex="1">
       <a-divider />
       <a-row>
@@ -10,13 +10,14 @@
         <a-col :span="12">
           <a-card title="温馨提示">
             <h4>欢迎使用临时网盘系统,请勿上传隐私文件！</h4>
-            <h4>欢迎使用临时网盘系统,请勿上传隐私文件！</h4>
+            <h4>文件有效期为 <a style="color: red"> {{fileLife}} </a> 小时！</h4>
+            <h4>文件大小限制 <a style="color: red"> {{fileSize}} </a> MB！</h4>
           </a-card>
         </a-col>
       </a-row>
       <a-divider />
       <div>
-        <a-upload-dragger :progress="progress" name="file" :before-upload="beforeUpload" :showUploadList="true"
+        <a-upload-dragger :progress=" progress" name="file" :before-upload="beforeUpload" :showUploadList="true"
           :multiple="false" action="/file/upload" @change="handleChange">
           <p class="ant-upload-drag-icon">
             <inbox-outlined></inbox-outlined>
@@ -40,8 +41,9 @@
           提取文件
         </a-button>
       </div>
+      <a-divider />
     </a-col>
-    <a-col :flex="1"></a-col>
+    <a-col :flex="2"></a-col>
   </a-row>
 
 
@@ -93,7 +95,7 @@ export default defineComponent({
           console.log(e);
           this.showResult = true
           this.uploadStatus = e.file.response.status
-          this.subTitle = "文件：" + e.file.originFileObj.name + " 有效期: " + this.fileLife + " 小时,请牢记提取码！"
+          this.subTitle = "文件 " + e.file.originFileObj.name + " 上传成功!有效期为 " + this.fileLife + " 小时,请牢记提取码！"
           if (e.file.response.success) {
             this.uploadResult = e.file.response.message
           } else {
