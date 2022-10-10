@@ -17,8 +17,8 @@
       </a-row>
       <a-divider />
       <div>
-        <a-upload-dragger :progress="progress" :accept="null" name="file" :before-upload="beforeUpload" :showUploadList="true"
-          :multiple="false" action="/file/upload" @change="handleChange">
+        <a-upload-dragger :progress="progress" name="file" :before-upload="beforeUpload" :showUploadList="true"
+          :capture="camera" :multiple="false" action="/file/upload" @change="handleChange">
           <p class="ant-upload-drag-icon">
             <inbox-outlined></inbox-outlined>
           </p>
