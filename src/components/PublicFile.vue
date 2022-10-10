@@ -4,19 +4,23 @@
     <a-col :flex="1">
       <a-divider />
       <a-row>
-        <a-col :span="12">
+
+        <a-col :span="11">
           <img src="../assets/logo.png" />
         </a-col>
-        <a-col :span="12">
+        <a-col :span="2"></a-col>
+        <a-col :span="10">
           <a-card title="温馨提示">
             <h4>欢迎使用临时网盘系统,请勿上传隐私文件！</h4>
             <h4>文件有效期为 <a style="color: red"> {{fileLife}} </a> 小时！</h4>
             <h4>文件大小限制 <a style="color: red"> {{fileSize}} </a> MB！</h4>
           </a-card>
         </a-col>
+
+
       </a-row>
       <a-divider />
-      <div>
+      <div style="padding-inline: 3%;">
         <a-upload-dragger :progress="progress" name="file" :before-upload="beforeUpload" :showUploadList="true"
           :capture="camera" :multiple="false" action="/file/upload" @change="handleChange">
           <p class="ant-upload-drag-icon">
