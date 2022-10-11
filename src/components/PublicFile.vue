@@ -31,6 +31,9 @@
       </div>
       <a-modal v-model:visible="showResult" title="上传结果" okText="确定" cancelText="取消" @ok="handleOk">
         <a-result :status="uploadStatus" :title="uploadResult" :sub-title="subTitle">
+          {{this.downLoadUrl}}
+          <a-divider type="vertical" />
+          <a-button @click="copy" type="primary">复制下载链接</a-button>
         </a-result>
       </a-modal>
       <a-divider />
@@ -58,7 +61,11 @@ import { InboxOutlined } from '@ant-design/icons-vue';
 import { DownloadOutlined } from '@ant-design/icons-vue';
 import { message } from 'ant-design-vue';
 import { defineComponent, ref } from 'vue';
+import useClipboard from 'vue-clipboard3';
 import axios from 'axios';
+
+const { toClipboard } = useClipboard();
+
 export default defineComponent({
   components: {
     InboxOutlined, DownloadOutlined
@@ -87,6 +94,7 @@ export default defineComponent({
       class: 'test',
     };
     return {
+      downLoadUrl: '',
       fileSize: 10,
       fileLife: 10,
       subTitle: '',
@@ -96,14 +104,14 @@ export default defineComponent({
       uploadStatus: 'info',
       handleChange: e => {
         if (e.file.status == 'done') {
-          console.log(e);
           this.showResult = true
           this.uploadStatus = e.file.response.status
-          this.subTitle = "文件 " + e.file.originFileObj.name + " 上传成功!有效期为 " + this.fileLife + " 小时,请牢记提取码！"
+          this.subTitle = "上传成功!文件有效期为 " + this.fileLife + " 小时,请牢记提取码！"
+          this.downLoadUrl = window.location.href + "file/" + e.file.response.fileObj.shareCode
           if (e.file.response.success) {
-            this.uploadResult = e.file.response.message
+            this.uploadResult = e.file.response.message + "提取码：" + e.file.response.fileObj.shareCode
           } else {
-            this.uploadResult = e.file.response.message
+            this.uploadResult = e.file.response.message + "提取码：" + e.file.response.fileObj.shareCode
           }
         }
       },
@@ -124,6 +132,14 @@ export default defineComponent({
           message.warning("此提取码不存在！")
         }
       });
+    },
+    copy() {
+      try {
+        toClipboard(this.downLoadUrl)
+        message.success('复制成功！')
+      } catch (e) {
+        message.error('复制失败！')
+      }
     },
   }
 });
