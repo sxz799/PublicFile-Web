@@ -62,9 +62,7 @@
 </template>
 
 <script>
-import { InboxOutlined } from '@ant-design/icons-vue';
-import { DownloadOutlined } from '@ant-design/icons-vue';
-import { CopyOutlined } from '@ant-design/icons-vue';
+import { InboxOutlined, DownloadOutlined, CopyOutlined } from '@ant-design/icons-vue';
 import { message } from 'ant-design-vue';
 import { defineComponent, ref } from 'vue';
 import useClipboard from 'vue-clipboard3';
