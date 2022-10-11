@@ -112,7 +112,7 @@ export default defineComponent({
         if (e.file.status == 'done') {
           this.showResult = true
           this.uploadStatus = e.file.response.status
-          this.downLoadUrl = window.location.href + "file/" + e.file.response.fileObj.shareCode
+          this.downLoadUrl = window.location.href + "file/download/" + e.file.response.fileObj.shareCode
           this.subTitle = "下载链接：" + this.downLoadUrl
 
           if (e.file.response.success) {
