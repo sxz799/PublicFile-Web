@@ -136,7 +136,7 @@ export default defineComponent({
           message.info("即将开始下载！文件大小为：" + parseFloat(res.data.fileObj.fileSize / 1024 / 1024).toFixed(2) + " MB！", 10)
           window.location.href = "/file/download/" + this.fileCode
         } else {
-          message.warning("此提取码不存在！")
+          message.warning(res.data.message)
         }
       });
     },
