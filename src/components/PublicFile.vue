@@ -22,7 +22,7 @@
       <a-divider />
       <div style="padding-inline: 3%;">
         <a-upload-dragger :progress="progress" name="file" :before-upload="beforeUpload" :showUploadList="true"
-          :capture="camera" :multiple="false" action="/file/upload" @change="handleChange">
+          :capture="null" :multiple="false" action="/file/upload" @change="handleChange">
           <p class="ant-upload-drag-icon">
             <inbox-outlined></inbox-outlined>
           </p>
@@ -32,7 +32,7 @@
       <a-modal v-model:visible="showResult" okText="确定" cancelText="取消" @ok="handleOk">
         <a-result :status="uploadStatus" :title="uploadResult" :sub-title="subTitle">
           <template #extra>
-            <a-button @click="copy" type="danger">
+            <a-button @click="copy" type="primary" shape="round">
               <template #icon>
                 <CopyOutlined />
               </template>
@@ -43,7 +43,7 @@
       </a-modal>
       <a-divider />
       <div>
-        <a-input v-model:value="fileCode" allowClear placeholder="请输入文件提取码" show-count :maxlength="10"
+        <a-input v-model:value="shareCode" allowClear placeholder="请输入文件提取码" show-count :maxlength="10"
           style="vertical-align:middle;width: calc(95% - 150px);height: 40px;" />
         <a-divider type="vertical" />
         <a-button @click="download" type="primary" shape="round" style="vertical-align:middle;height: 40px;">
@@ -102,7 +102,7 @@ export default defineComponent({
       fileSize: 10,
       fileLife: 10,
       subTitle: '',
-      fileCode: '',
+      shareCode: '',
       showResult: false,
       uploadResult: '',
       uploadStatus: 'info',
@@ -129,10 +129,10 @@ export default defineComponent({
       this.showResult = false
     },
     download() {
-      axios.get("/file/exist/" + this.fileCode).then((res) => {
+      axios.get("/file/exist/" + this.shareCode).then((res) => {
         if (res.data.success) {
           message.info("即将开始下载！文件大小为：" + parseFloat(res.data.fileObj.fileSize / 1024 / 1024).toFixed(2) + " MB！", 10)
-          window.location.href = "/file/download/" + this.fileCode
+          window.location.href = "/file/download/" + this.shareCode
         } else {
           message.warning(res.data.message)
         }
