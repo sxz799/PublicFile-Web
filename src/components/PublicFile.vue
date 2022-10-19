@@ -11,9 +11,10 @@
         <a-col :span="2"></a-col>
         <a-col :span="10">
           <a-card title="温馨提示">
-            <h4>欢迎使用临时网盘系统,请勿上传隐私文件！</h4>
-            <h4>文件有效期为 <a style="color: red"> {{fileLife}} </a> 小时！</h4>
-            <h4>文件大小限制 <a style="color: red"> {{fileSize}} </a> MB！</h4>
+            <h5>欢迎使用临时网盘系统.</h5>
+            <h5>请勿上传隐私文件!</h5>
+            <h3>文件有效期为 <a style="color: red"> {{fileLife}} </a> 小时！</h3>
+            <h3>文件大小限制 <a style="color: red"> {{fileSize}} </a> MB！</h3>
           </a-card>
         </a-col>
 
