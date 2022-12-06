@@ -1,13 +1,22 @@
 const { defineConfig } = require('@vue/cli-service')
 module.exports = defineConfig({
+  pwa: {
+    iconPaths: {
+      favicon32: 'favicon.ico',
+      favicon16: 'favicon.ico',
+      appleTouchIcon: 'appleIcon.png',
+      maskIcon: 'favicon.ico',
+      msTileImage: 'favicon.ico'
+    }
+  },
   transpileDependencies: true,
-  //publicPath: "/static", //加上这一行即可
+  publicPath: "/static", //加上这一行即可
   devServer: {
     port: 4000,
     proxy: {
       '/file': {
         ws: false,
-        target: "http://127.0.0.1:7990",
+        target: "http://d.sxz799.fun:4000",
         changeOrigin: true
       }
     }
