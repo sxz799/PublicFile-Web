@@ -25,18 +25,7 @@
           <p class="ant-upload-text">点击或拖拽文件到这里进行上传</p>
         </a-upload-dragger>
       </div>
-      <a-modal v-model:visible="showResult" okText="确定" cancelText="取消" @ok="handleOk">
-        <a-result :status="uploadStatus" :title="uploadResult" :sub-title="subTitle">
-          <template #extra>
-            <a-button @click="copy" type="primary" shape="round">
-              <template #icon>
-                <CopyOutlined />
-              </template>
-              复制下载链接
-            </a-button>
-          </template>
-        </a-result>
-      </a-modal>
+
       <a-divider />
       <div>
         <a-input v-model:value="shareCode" allowClear placeholder="请输入文件提取码" show-count :maxlength="10"
@@ -53,7 +42,24 @@
     </a-col>
     <a-col :flex="2"></a-col>
   </a-row>
-
+  <a-modal v-model:visible="showResult" okText="确定" cancelText="取消" @ok="handleOkShowResult">
+    <a-result :status="uploadStatus" :title="uploadResult" :sub-title="subTitle">
+      <template #extra>
+        <a-button @click="copy" type="primary" shape="round">
+          <template #icon>
+            <CopyOutlined />
+          </template>
+          复制下载链接
+        </a-button>
+      </template>
+    </a-result>
+  </a-modal>
+  <a-modal v-model:visible="showConfirm" title="确定下载吗？" okText="确定" cancelText="取消" @ok="handleOkShowConfirm">
+    <p>文件名: {{ fileName }}</p>
+    <p>文件大小:  {{ fileLife }}MB</p>
+    <p>文件md5: {{ fileMd5 }}</p>
+    <p>文件上传时间:  {{ uploadDate }}</p>
+  </a-modal>
 
 </template>
 
@@ -97,9 +103,13 @@ export default defineComponent({
       downLoadUrl: '',
       fileSize: 10,
       fileLife: 10,
+      fileName: '',
+      fileMd5: '',
+      uploadDate: '',
       subTitle: '',
       shareCode: '',
       showResult: false,
+      showConfirm: false,
       uploadResult: '',
       uploadStatus: 'info',
       handleChange: e => {
@@ -121,14 +131,24 @@ export default defineComponent({
     };
   },
   methods: {
-    handleOk() {
+    handleOkShowResult() {
       this.showResult = false
+    },
+    handleOkShowConfirm() {
+      this.showConfirm = false
+      message.info("即将开始下载！文件大小为：" + this.fileSize + " MB！", 10)
+
+      //准备下载文件
+      window.location.href = "/file/download/" + this.shareCode
     },
     download() {
       axios.get("/file/exist/" + this.shareCode).then((res) => {
         if (res.data.success) {
-          message.info("即将开始下载！文件大小为：" + parseFloat(res.data.fileObj.fileSize / 1024 / 1024).toFixed(2) + " MB！", 10)
-          window.location.href = "/file/download/" + this.shareCode
+          this.showConfirm = true
+          this.fileSize=res.data.fileObj.fileSize
+          this.fileName=res.data.fileObj.fileName
+          this.fileMd5=res.data.fileObj.fileMd5
+          this.uploadDate=res.data.fileObj.uploadDate
         } else {
           message.warning(res.data.message)
         }
