@@ -9,8 +9,8 @@
           <a-card title="温馨提示">
             <h5>欢迎使用临时网盘系统.</h5>
             <h5>请勿上传隐私文件!</h5>
-            <h3>文件有效期为 <a style="color: red"> {{ fileLife }} </a> 小时！</h3>
-            <h3>文件大小限制 <a style="color: red"> {{ fileSize }} </a> MB！</h3>
+            <h3>文件有效期为 <a style="color: red"> {{ limitFileLife }} </a> 小时！</h3>
+            <h3>文件大小限制 <a style="color: red"> {{ limitFileSize }} </a> MB！</h3>
           </a-card>
         </a-col>
         <a-col span="1"></a-col>
@@ -56,7 +56,7 @@
   </a-modal>
   <a-modal v-model:visible="showConfirm" title="确定下载吗？" okText="确定" cancelText="取消" @ok="handleOkShowConfirm">
     <p>文件名: {{ fileName }}</p>
-    <p>文件大小:  {{ fileLife }}MB</p>
+    <p>文件大小:  {{ fileSize }}MB</p>
     <p>文件md5: {{ fileMd5 }}</p>
     <p>文件上传时间:  {{ uploadDate }}</p>
   </a-modal>
@@ -78,15 +78,15 @@ export default defineComponent({
   },
   mounted() {
     axios.get("/file/config").then((res) => {
-      this.fileSize = res.data.fileSize
-      this.fileLife = res.data.fileLife
+      this.limitFileLife = res.data.limitFileLife
+      this.limitFileSize = res.data.limitFileSize
     });
   },
   data() {
     const beforeUpload = file => {
-      const sizeLimit = file.size / 1024 / 1024 < this.fileSize;
+      const sizeLimit = file.size / 1024 / 1024 < this.limitFileSize;
       if (!sizeLimit) {
-        message.error('文件大小不可超过 ' + this.fileSize + ' MB !');
+        message.error('文件大小不可超过 ' + this.limitFileSize + ' MB !');
       }
       return sizeLimit;
     };
@@ -101,9 +101,10 @@ export default defineComponent({
     };
     return {
       downLoadUrl: '',
-      fileSize: 10,
-      fileLife: 10,
+      limitFileSize: 10,
+      limitFileLife: 10,
       fileName: '',
+      fileSize:0,
       fileMd5: '',
       uploadDate: '',
       subTitle: '',
@@ -145,7 +146,7 @@ export default defineComponent({
       axios.get("/file/exist/" + this.shareCode).then((res) => {
         if (res.data.success) {
           this.showConfirm = true
-          this.fileSize=res.data.fileObj.fileSize
+          this.fileSize=parseFloat(res.data.fileObj.fileSize / 1024 / 1024).toFixed(2)
           this.fileName=res.data.fileObj.fileName
           this.fileMd5=res.data.fileObj.fileMd5
           this.uploadDate=res.data.fileObj.uploadDate
