@@ -1,7 +1,7 @@
 <template>
   <a-row type="flex">
-    <a-col :flex="2"></a-col>
-    <a-col :flex="1">
+    <a-col :flex="5"></a-col>
+    <a-col :flex="2">
       <a-divider />
       <a-row>
         <a-col span="1"></a-col>
@@ -15,7 +15,7 @@
         </a-col>
         <a-col span="1"></a-col>
       </a-row>
-      <a-divider />
+      <br />
       <div style="padding-inline: 4%;">
         <a-upload-dragger :progress="progress" name="file" :before-upload="beforeUpload" :showUploadList="true"
           :capture="null" :multiple="false" action="/file/upload" @change="handleChange">
@@ -26,7 +26,7 @@
         </a-upload-dragger>
       </div>
 
-      <a-divider />
+      <br />
       <div>
         <a-input v-model:value="shareCode" allowClear placeholder="请输入文件提取码" show-count :maxlength="10"
           style="vertical-align:middle;width: calc(95% - 150px);height: 40px;" />
@@ -40,7 +40,7 @@
       </div>
       <a-divider />
     </a-col>
-    <a-col :flex="2"></a-col>
+    <a-col :flex="5"></a-col>
   </a-row>
   <a-modal v-model:visible="showResult" okText="确定" cancelText="取消" @ok="handleOkShowResult">
     <a-result :status="uploadStatus" :title="uploadResult" :sub-title="subTitle">
@@ -56,9 +56,9 @@
   </a-modal>
   <a-modal v-model:visible="showConfirm" title="确定下载吗？" okText="确定" cancelText="取消" @ok="handleOkShowConfirm">
     <p>文件名: {{ fileName }}</p>
-    <p>文件大小:  {{ fileSize }}MB</p>
+    <p>文件大小: {{ fileSize }}MB</p>
     <p>文件md5: {{ fileMd5 }}</p>
-    <p>文件上传时间:  {{ uploadDate }}</p>
+    <p>文件上传时间: {{ uploadDate }}</p>
   </a-modal>
 
 </template>
@@ -104,7 +104,7 @@ export default defineComponent({
       limitFileSize: 10,
       limitFileLife: 10,
       fileName: '',
-      fileSize:0,
+      fileSize: 0,
       fileMd5: '',
       uploadDate: '',
       subTitle: '',
@@ -143,13 +143,17 @@ export default defineComponent({
       window.location.href = "/file/download/" + this.shareCode
     },
     download() {
+      if (this.shareCode.length < 1) {
+        message.warning("提取码不可为空！")
+        return
+      }
       axios.get("/file/exist/" + this.shareCode).then((res) => {
         if (res.data.success) {
           this.showConfirm = true
-          this.fileSize=parseFloat(res.data.fileObj.fileSize / 1024 / 1024).toFixed(2)
-          this.fileName=res.data.fileObj.fileName
-          this.fileMd5=res.data.fileObj.fileMd5
-          this.uploadDate=res.data.fileObj.uploadDate
+          this.fileSize = parseFloat(res.data.fileObj.fileSize / 1024 / 1024).toFixed(2)
+          this.fileName = res.data.fileObj.fileName
+          this.fileMd5 = res.data.fileObj.fileMd5
+          this.uploadDate = res.data.fileObj.uploadDate
         } else {
           message.warning(res.data.message)
         }
